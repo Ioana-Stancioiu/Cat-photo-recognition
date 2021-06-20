@@ -1,0 +1,119 @@
+STANCIOIU LAURA IOANA
+GRUPA 315CD
+
+Part-1
+
+generate_probailities
+	Am calculat numarul de necunoscute ale sistemului,n,l-am initializat
+pe b ca find un vector coloana de n elemente cu valoarea 0 si am facut ultimele
+rows elemente din vector 1. Apoi,cu doua for-uri unul de la 1 la numarul de
+randuri si unul de la 1 la randul curent, am modificat valorile din matricea
+A, care a fost initializata ca fiind o matrice patratica de n pe n, luand in
+considerare 5 cazuri diferite. Cazurile sunt: cand ne aflam pe primul rand,
+pe ultimul rand, caz in care avem valori diferite daca suntem pozitionati 
+pe primul, ultimul sau oricare element din rand, cazul in care suntem la
+primul element din rand, la ultimul sau oricare.
+
+matrix_to_csr
+	Cu doua for-uri am trecut prin toate elementele matricei A si am 
+verificat daca au valoarea diferita de 0, caz in care am incrementat nz si
+am actualizat vectorii values cu valoarea elementului nenul si colind cu 
+indicele coloanei acelui element in matrice, de asemenea cu un contor z am
+testat daca elementul din matricea A testat este primul de pe rand, in acest
+caz introducand indicele sau din vectorul values in vectorul rowptr.
+
+Jacobi_factorization
+	Am aplicat algoritmul Jacobi asupra matricei A aplicand formulele 
+pentru a afla G_J si c_J.
+
+Jacobi_sparse
+	L-am initializat pe prev_x cu un vector coloana de zerouri si am 
+iterat pana cand eroarea a devenit mai mica decat toleranta, folosind 
+functia de csr_multiplication pentru a efectua produsul G*prev_x. Am
+calculat si o eroare suplimentara numita relerr care este err imapartita 
+la norma lui x plus eps, testand daca este mai mica ca toleranta, pentru ca
+desi testele mi se incadrau in timp tot mi se parea ca dureaza prea mult si
+asa am redus timpul cu 30-40 de secunde.
+
+Part-2
+  	
+clustering_pc
+	Am initializat matricea centroids cu media listelor de clustere cu
+puncte din matricea points. Apoi am luat fiecare punct din matricea points
+in parte si am calculat distanta euclidiana de la acel punct la centroizi
+alegand centroidul din care face parte ca fiind cel fata de care distanta
+era cea mai mica. Apoi am construit o noua matrice newCentroids cu media
+noilor clustere create. Am calculat diff ca fiind diferenta dintre noua
+si vechea matrice de centroizi, iar cand diff a ajuns sa fie mai mica 
+ca eps am oprit iterarea.
+
+compute_cost_pc
+	Pentru fiecare punct din matricea points am calculat distanta fata de
+centroizi, iar distanta cea mai mica era cea a centroidului corespunzator
+punctului, pe care am salvat-o in vectorul distArray. La sfarsit am calculat
+costul ca fiind suma elementelor vectorului distArray.
+
+Part-3
+
+Householder
+	La fiecare iteratie am calculat sigma ca fiind norma elementelor de sub
+diagonala principala, inclusiv cel de pe diagonala principala. Am calculat
+refloctorul Householder si l-am aplicat asupra matricii A si apoi asupra 
+matricii Q, pe care am initializat-o cu In, unde n este numarul de linii al 
+matricii A. La sfarsitul iteratiilor matricea superior triunghiulara R este A, 
+iar Q este Q transpus.
+
+SST
+	Am rezolvat sistemul Ax=b pornind de la ultima linie/ecuatie spre prima
+si astfel calculand vectorul coloana de solutii x.
+
+rgbHistogram
+	Am citit matricea imaginii cu ajutorul functiei imread. Am luat
+intervalul de la 0 la (count_bins-1)*256/count_bins+256/count_bins cu 
+incrementul de 256/count_bins si apoi cu functia histc am calculat histogramele
+pentru matricile R,G,B si le-am reunit in vectorul sol.
+
+hsvHistogram
+	Pentru functia hsvHistogram am procedat similar ca la rgbHistogram
+doar ca am impartit intervalul la 1.01 si am transformat matricea citita din
+format RGB in format HSV prin functia RGB2HSV in care am implementat
+algoritmul descris in documentul pentru tema intr-un mod vectorizat ca sa
+imbunatatesc durata testelor, deoarece primeam timeout la ultimul test de la
+partea 3.
+
+preprocess
+	Pentru aceasta functie am folosit functia getImgNames care era deja
+implementata ca sa obtin un vector cu numele imaginilor. Apoi pentru fiecare 
+imagine am apelat rgbHistogram sau hsvHistogram in functie de tipul 
+histogramei specificat salvand histograma in matricea X si am pus in vectorul y elementele 1 sau -1 daca imaginea era cu pisici respectiv fara.
+
+learn
+	Am contruit matricea X tilda adaugand la sfarsitul lui X o coloana cu
+1. Apoi am folosit Householder pentru descompunerea QR a matricii si ca sa il
+aflu pe w am rezovat cu SST sistemul Rw=Q'y;
+
+evaluate
+	Am obtinut X si y prin functia preprocess, am calculat X tilda si 
+pentru fiecare imagine am calculat y_w, noul y. In enunt era specificat ca 
+acesta este w'*x, dar w este initial un vector coloana asa ca prin transpunerea
+lui se obtine un vector linie, iar x este de asemenea un vector linie, asa
+ca pentru a-l calcula pe y l-am transpus si pe x. Daca y_w si labelul 
+corespunzator pozei erau ambele mai mari ca 0 sau mai mici ca zero imaginea
+se considera a fi etichetata corect. La sfarsit percentage era numarul 
+de imagini etichetate corect impartite la numarul de imagini total.
+
+Part-4
+
+Am folosit functiile preprocess, hsvHistogram si rgbHistogram implementate la
+partea a 3-a.
+
+learn
+	Am scalat matricea X tilda. L-am initializat pe w cu valori random
+intre -0.1 si 0.1. Am implementat algoritmul Gradient Descent descris in 
+documentul pentru tema.
+
+evaluate
+	Am scalat din nou matricea X tilda si am aplicat algoritmul de
+evaluate descris si la partea a 3 a.	
+
+
